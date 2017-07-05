@@ -97,4 +97,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception as e:
+        sys.stderr.write('{}\n'.format(e))
+        sys.exit(1)
