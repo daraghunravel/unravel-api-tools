@@ -56,7 +56,7 @@ def submit(session, data):
     """
     response = session.post('{}/test'.format(URL), data)
     if not response.status_code == 202:
-        raise Exception(response.text)
+        raise Exception(json_message(response))
     return response.headers['Location']
 
 
@@ -71,8 +71,15 @@ def poll(session, queue_url):
         print(response.text)
         time.sleep(10)
     if not response.status_code == 303:
-        raise Exception(response.text)
+        raise Exception(json_message(response))
     return response.headers['Location']
+
+
+def json_message(response):
+    try:
+        return response.json()['message']
+    except Exception:
+        return response.text
 
 
 def main():
@@ -89,7 +96,7 @@ def main():
     print('complete: {}'.format(results_url))
     response = session.get(results_url)
     if not response.status_code == 200:
-        raise Exception(response.text)
+        raise Exception(json_message(response))
     print('-' * 80)
     print(response.text)
     result = yaml.safe_load(response.text)
